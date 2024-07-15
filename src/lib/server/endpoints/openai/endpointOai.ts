@@ -114,6 +114,10 @@ export async function endpointOai(
 				messagesOpenAI[0].content = preprompt ?? "";
 			}
 
+			if (messagesOpenAI?.[0]?.role === "system" && !messagesOpenAI?.[0]?.content) {
+				messagesOpenAI.shift();
+			}
+
 			const parameters = { ...model.parameters, ...generateSettings };
 			const body: ChatCompletionCreateParamsStreaming = {
 				model: model.id ?? model.name,
@@ -146,10 +150,12 @@ async function prepareMessages(
 			if (message.from === "user") {
 				return {
 					role: message.from,
-					content: [
-						...(await prepareFiles(imageProcessor, message.files ?? [])),
-						{ type: "text", text: message.content },
-					],
+					content: message.files?.length
+						? [
+								...(await prepareFiles(imageProcessor, message.files ?? [])),
+								{ type: "text", text: message.content },
+						  ]
+						: message.content,
 				};
 			}
 			return {
