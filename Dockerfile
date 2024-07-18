@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/app/.npm \
 FROM builder-production as builder
 
 ARG APP_BASE=
-ARG PUBLIC_APP_COLOR=blue
+ARG PUBLIC_APP_COLOR=lime
 ENV BODY_SIZE_LIMIT=15728640
 
 RUN --mount=type=cache,target=/app/.npm \
@@ -55,7 +55,7 @@ ENV INCLUDE_DB=${INCLUDE_DB}
 # svelte requires APP_BASE at build time so it must be passed as a build arg
 ARG APP_BASE=
 # tailwind requires the primary theme to be known at build time so it must be passed as a build arg
-ARG PUBLIC_APP_COLOR=blue
+ARG PUBLIC_APP_COLOR=lime
 ENV BODY_SIZE_LIMIT=15728640
 
 # install dotenv-cli
