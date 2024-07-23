@@ -83,7 +83,7 @@ export const load: LayoutServerLoad = async ({ locals, depends }) => {
 
 	let loginRequired = false;
 
-	if (requiresUser && !locals.user && messagesBeforeLogin) {
+	if (requiresUser && !locals.user && messagesBeforeLogin && messagesBeforeLogin !== -1) {
 		if (conversations.length > messagesBeforeLogin) {
 			loginRequired = true;
 		} else {
@@ -203,6 +203,6 @@ export const load: LayoutServerLoad = async ({ locals, depends }) => {
 		enableAssistantsRAG: env.ENABLE_ASSISTANTS_RAG === "true",
 		loginRequired,
 		loginEnabled: requiresUser,
-		guestMode: requiresUser && messagesBeforeLogin > 0,
+		guestMode: requiresUser && messagesBeforeLogin !== 0,
 	};
 };
