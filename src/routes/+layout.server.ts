@@ -10,8 +10,9 @@ import { ObjectId } from "mongodb";
 import type { ConvSidebar } from "$lib/types/ConvSidebar";
 import { allTools } from "$lib/server/tools";
 import { MetricsServer } from "$lib/server/metrics";
+import { usageLimits } from "$lib/server/usageLimits";
 
-export const load: LayoutServerLoad = async ({ locals, depends }) => {
+export const load: LayoutServerLoad = async ({ locals, depends, getClientAddress }) => {
 	depends(UrlDependency.ConversationList);
 
 	const settings = await collections.settings.findOne(authCondition(locals));
@@ -104,6 +105,25 @@ export const load: LayoutServerLoad = async ({ locals, depends }) => {
 
 			loginRequired = totalMessages > messagesBeforeLogin;
 		}
+	}
+
+	let remainingMessages: number | undefined = undefined;
+
+	if (usageLimits?.freeMessagesPerDay) {
+		const now = new Date();
+		const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+		const nEvents = Math.max(
+			await collections.messageEvents.countDocuments({
+				userId: locals.user?._id ?? locals.sessionId,
+				createdAt: { $gte: startOfDay },
+			}),
+			await collections.messageEvents.countDocuments({
+				ip: getClientAddress(),
+				createdAt: { $gte: startOfDay },
+			})
+		);
+
+		remainingMessages = usageLimits.freeMessagesPerDay - nEvents;
 	}
 
 	const toolUseDuration = (await MetricsServer.getMetrics().tool.toolUseDuration.get()).values;
@@ -204,5 +224,7 @@ export const load: LayoutServerLoad = async ({ locals, depends }) => {
 		loginRequired,
 		loginEnabled: requiresUser,
 		guestMode: requiresUser && messagesBeforeLogin !== 0,
+		freeMessagesPerDay: usageLimits?.freeMessagesPerDay,
+		remainingMessages,
 	};
 };

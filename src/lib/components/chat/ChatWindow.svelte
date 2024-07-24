@@ -7,6 +7,7 @@
 	import CarbonStopFilledAlt from "~icons/carbon/stop-filled-alt";
 	import CarbonCheckmark from "~icons/carbon/checkmark";
 	import CarbonCaretDown from "~icons/carbon/caret-down";
+	import CarbonInformation from "~icons/carbon/information";
 
 	import EosIconsLoading from "~icons/eos-icons/loading";
 
@@ -15,7 +16,7 @@
 	import type { Model } from "$lib/types/Model";
 	import WebSearchToggle from "../WebSearchToggle.svelte";
 	import ToolsMenu from "../ToolsMenu.svelte";
-	import LoginModal from "../LoginModal.svelte";
+	import FreeMessagesModal from "../FreeMessagesModal.svelte";
 	import { page } from "$app/stores";
 	import FileDropzone from "./FileDropzone.svelte";
 	import RetryBtn from "../RetryBtn.svelte";
@@ -49,7 +50,7 @@
 
 	$: isReadOnly = !models.some((model) => model.id === currentModel.id);
 
-	let loginModalOpen = false;
+	let freeMessagesModalOpen = false;
 	let message: string;
 	let timeout: ReturnType<typeof setTimeout>;
 	let isSharedRecently = false;
@@ -172,10 +173,10 @@
 />
 
 <div class="relative min-h-0 min-w-0">
-	{#if loginModalOpen}
-		<LoginModal
+	{#if freeMessagesModalOpen}
+		<FreeMessagesModal
 			on:close={() => {
-				loginModalOpen = false;
+				freeMessagesModalOpen = false;
 			}}
 		/>
 	{/if}
@@ -248,9 +249,9 @@
 					{models}
 					{currentModel}
 					on:message={(ev) => {
-						if ($page.data.loginRequired) {
+						if ($page.data.remainingMessages <= 0) {
 							ev.preventDefault();
-							loginModalOpen = true;
+							freeMessagesModalOpen = true;
 						} else {
 							dispatch("message", ev.detail);
 						}
@@ -261,9 +262,9 @@
 					{models}
 					{assistant}
 					on:message={(ev) => {
-						if ($page.data.loginRequired) {
+						if ($page.data.remainingMessages <= 0) {
 							ev.preventDefault();
-							loginModalOpen = true;
+							freeMessagesModalOpen = true;
 						} else {
 							dispatch("message", ev.detail);
 						}
@@ -356,9 +357,9 @@
 								bind:value={message}
 								on:submit={handleSubmit}
 								on:beforeinput={(ev) => {
-									if ($page.data.loginRequired) {
+									if ($page.data.remainingMessages <= 0) {
 										ev.preventDefault();
-										loginModalOpen = true;
+										freeMessagesModalOpen = true;
 									}
 								}}
 								on:paste={onPaste}
@@ -421,6 +422,23 @@
 								{currentModel.id}
 							</span>
 						{/if}
+					{/if}
+					{#if $page.data.remainingMessages !== undefined}
+						<span class="max-sm:hidden">·</span><br class="sm:hidden" />
+						<button
+							type="button"
+							on:click|stopPropagation|preventDefault={() => {
+								freeMessagesModalOpen = true;
+							}}
+							class="hover:underline"
+							class:text-red-700={$page.data.remainingMessages <= 3}
+						>
+							Remaining messages for today:
+							<span class="font-bold">
+								{$page.data.remainingMessages}
+							</span>
+							<CarbonInformation class="-mt-0.5 inline-block" />
+						</button>
 					{/if}
 					<span class="max-sm:hidden">·</span><br class="sm:hidden" /> Generated content may be inaccurate
 					or false.

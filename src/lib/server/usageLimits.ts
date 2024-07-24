@@ -17,6 +17,7 @@ export const usageLimitsSchema = z
 				return val;
 			}, z.coerce.number().optional())
 			.optional(), // how many messages per minute
+		freeMessagesPerDay: z.coerce.number().optional(), // how many free messages per day
 	})
 	.optional();
 

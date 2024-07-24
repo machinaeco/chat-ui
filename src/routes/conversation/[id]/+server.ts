@@ -116,6 +116,27 @@ export async function POST({ request, locals, params, getClientAddress }) {
 		}
 	}
 
+	if (usageLimits?.freeMessagesPerDay) {
+		const now = new Date();
+		const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+		const nEvents = Math.max(
+			await collections.messageEvents.countDocuments({
+				userId,
+				createdAt: { $gte: startOfDay },
+			}),
+			await collections.messageEvents.countDocuments({
+				ip: getClientAddress(),
+				createdAt: { $gte: startOfDay },
+			})
+		);
+		if (nEvents > usageLimits.freeMessagesPerDay) {
+			throw error(
+				429,
+				"You have exceeded the number of messages for today. Please contact us to increase your limits."
+			);
+		}
+	}
+
 	if (usageLimits?.messages && conv.messages.length > usageLimits.messages) {
 		throw error(
 			429,
