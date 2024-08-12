@@ -18,7 +18,7 @@
 	},
 	"devDependencies": {
 		"@faker-js/faker": "^8.4.1",
-		"@iconify-json/carbon": "^1.1.16",
+		"@iconify-json/carbon": "^1.1.37",
 		"@iconify-json/eos-icons": "^1.1.6",
 		"@sveltejs/adapter-node": "^1.3.1",
 		"@sveltejs/kit": "^1.30.4",
@@ -97,6 +97,7 @@
 		"sbd": "^1.0.19",
 		"serpapi": "^1.1.1",
 		"sharp": "^0.33.4",
+		"stripe": "^16.6.0",
 		"tailwind-scrollbar": "^3.0.0",
 		"tailwindcss": "^3.4.0",
 		"uuid": "^9.0.1",

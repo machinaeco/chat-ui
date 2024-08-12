@@ -11,6 +11,7 @@ import type { ConvSidebar } from "$lib/types/ConvSidebar";
 import { allTools } from "$lib/server/tools";
 import { MetricsServer } from "$lib/server/metrics";
 import { usageLimits } from "$lib/server/usageLimits";
+import { billingEnv, hasActivePass, hasPaymentFailed } from "$lib/utils/billing";
 
 export const load: LayoutServerLoad = async ({ locals, depends, getClientAddress }) => {
 	depends(UrlDependency.ConversationList);
@@ -107,9 +108,14 @@ export const load: LayoutServerLoad = async ({ locals, depends, getClientAddress
 		}
 	}
 
+	const userHasActivePass = locals.user ? await hasActivePass(locals.user) : false;
+	const userHasPaymentFailed = locals.user ? await hasPaymentFailed(locals.user) : false;
+	const monthlyAmount = billingEnv?.stripe?.prices?.monthly?.amount?.[locals.currency || "USD"];
+	const yearlyAmount = billingEnv?.stripe?.prices?.yearly?.amount?.[locals.currency || "USD"];
+
 	let remainingMessages: number | undefined = undefined;
 
-	if (usageLimits?.freeMessagesPerDay) {
+	if (usageLimits?.freeMessagesPerDay && !userHasActivePass) {
 		const now = new Date();
 		const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 		const nEvents = Math.max(
@@ -226,5 +232,11 @@ export const load: LayoutServerLoad = async ({ locals, depends, getClientAddress
 		guestMode: requiresUser && messagesBeforeLogin !== 0,
 		freeMessagesPerDay: usageLimits?.freeMessagesPerDay,
 		remainingMessages,
+		isBillingEnabled: !!billingEnv,
+		userHasActivePass,
+		userHasPaymentFailed,
+		currency: locals.currency,
+		monthlyAmount,
+		yearlyAmount,
 	};
 };

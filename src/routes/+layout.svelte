@@ -122,16 +122,13 @@
 		});
 	}
 
-	$: mobileNavTitle = ["/models", "/assistants", "/privacy"].includes($page.route.id ?? "")
+	$: mobileNavTitle = ["/models", "/assistants", "/privacy", "/pass"].includes($page.route.id ?? "")
 		? ""
 		: data.conversations.find((conv) => conv.id === $page.params.id)?.title;
 </script>
 
 <svelte:head>
 	<title>{envPublic.PUBLIC_APP_NAME}</title>
-	<meta name="description" content="The first open source alternative to ChatGPT. 💪" />
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:site" content="@huggingface" />
 
 	<!-- use those meta tags everywhere except on the share assistant page -->
 	<!-- feel free to refacto if there's a better way -->

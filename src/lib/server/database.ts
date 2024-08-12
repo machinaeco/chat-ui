@@ -13,6 +13,7 @@ import type { ConversationStats } from "$lib/types/ConversationStats";
 import type { MigrationResult } from "$lib/types/MigrationResult";
 import type { Semaphore } from "$lib/types/Semaphore";
 import type { AssistantStats } from "$lib/types/AssistantStats";
+import type { Pass } from "$lib/types/Pass";
 import { logger } from "$lib/server/logger";
 import { building } from "$app/environment";
 import { onExit } from "./exitHandler";
@@ -79,6 +80,7 @@ export class Database {
 		const settings = db.collection<Settings>("settings");
 		const users = db.collection<User>("users");
 		const sessions = db.collection<Session>("sessions");
+		const passes = db.collection<Pass>("passes");
 		const messageEvents = db.collection<MessageEvent>("messageEvents");
 		const bucket = new GridFSBucket(db, { bucketName: "files" });
 		const migrationResults = db.collection<MigrationResult>("migrationResults");
@@ -95,6 +97,7 @@ export class Database {
 			settings,
 			users,
 			sessions,
+			passes,
 			messageEvents,
 			bucket,
 			migrationResults,
@@ -118,6 +121,7 @@ export class Database {
 			settings,
 			users,
 			sessions,
+			passes,
 			messageEvents,
 			semaphores,
 		} = this.getCollections();
@@ -191,6 +195,14 @@ export class Database {
 			.catch((e) => logger.error(e));
 		sessions.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 }).catch((e) => logger.error(e));
 		sessions.createIndex({ sessionId: 1 }, { unique: true }).catch((e) => logger.error(e));
+		passes.createIndex({ userId: 1 }).catch((e) => logger.error(e));
+		passes.createIndex({ userId: 1, expiresAt: -1 }).catch((e) => logger.error(e));
+		passes
+			.createIndex(
+				{ "billingInfo.stripe.subscriptionId": 1 },
+				{ partialFilterExpression: { "billingInfo.stripe.subscriptionId": { $exists: true } } }
+			)
+			.catch((e) => logger.error(e));
 		assistants.createIndex({ createdById: 1, userCount: -1 }).catch((e) => logger.error(e));
 		assistants.createIndex({ userCount: 1 }).catch((e) => logger.error(e));
 		assistants.createIndex({ featured: 1, userCount: -1 }).catch((e) => logger.error(e));

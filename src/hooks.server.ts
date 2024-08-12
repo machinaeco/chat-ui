@@ -145,6 +145,46 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	event.locals.sessionId = sessionId;
 
+	let currency = "USD";
+	const acceptLanguage = event.request.headers.get("accept-language");
+	const euroCountries = [
+		"de",
+		"fr",
+		"es",
+		"it",
+		"nl",
+		"be",
+		"lu",
+		"at",
+		"fi",
+		"ie",
+		"pt",
+		"gr",
+		"cy",
+		"mt",
+		"sk",
+		"si",
+		"lv",
+		"lt",
+		"ee",
+	];
+
+	if (acceptLanguage) {
+		const languages = acceptLanguage.split(",").map((lang) => {
+			const [languageCode] = lang.split(";");
+			const parts = languageCode.trim().split("-");
+			if (parts.length > 1) {
+				return parts[1].toLowerCase();
+			}
+		});
+
+		if (languages.some((lang) => lang && euroCountries.includes(lang))) {
+			currency = "EUR";
+		}
+	}
+
+	event.locals.currency = currency;
+
 	// CSRF protection
 	const requestContentType = event.request.headers.get("content-type")?.split(";")[0] ?? "";
 	/** https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#attr-enctype */

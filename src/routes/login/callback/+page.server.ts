@@ -24,11 +24,17 @@ export async function load({ url, locals, cookies, request, getClientAddress }) 
 		throw error(400, errorName + (errorDescription ? ": " + errorDescription : ""));
 	}
 
-	const { code, state, iss } = z
+	const {
+		code,
+		state,
+		iss,
+		redirect: redirectPath,
+	} = z
 		.object({
 			code: z.string(),
 			state: z.string(),
 			iss: z.string().optional(),
+			redirect: z.string().optional(),
 		})
 		.parse(Object.fromEntries(url.searchParams.entries()));
 
@@ -68,5 +74,5 @@ export async function load({ url, locals, cookies, request, getClientAddress }) 
 		ip: getClientAddress(),
 	});
 
-	throw redirect(302, `${base}/`);
+	throw redirect(302, `${base}/${redirectPath || ""}`);
 }

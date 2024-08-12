@@ -5,8 +5,11 @@ import { env } from "$env/dynamic/private";
 
 export const actions = {
 	async default({ url, locals, request }) {
+		const redirectToPass = !!(await request.formData()).get("pass");
 		const referer = request.headers.get("referer");
-		let redirectURI = `${(referer ? new URL(referer) : url).origin}${base}/login/callback`;
+		let redirectURI = `${(referer ? new URL(referer) : url).origin}${base}/login/callback${
+			redirectToPass ? "?redirect=pass" : ""
+		}`;
 
 		// TODO: Handle errors if provider is not responding
 

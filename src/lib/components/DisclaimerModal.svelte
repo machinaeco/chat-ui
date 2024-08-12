@@ -91,7 +91,7 @@
 					href={navLink.href}
 					target="_blank"
 					rel="noreferrer"
-					class="flex flex-none items-center gap-1.5 rounded-lg px-3 py-0.5 text-sm text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+					class="flex flex-none items-center gap-1.5 rounded-lg px-3 py-0.5 text-sm text-gray-500 hover:bg-gray-100"
 				>
 					{navLink.title}
 				</a>

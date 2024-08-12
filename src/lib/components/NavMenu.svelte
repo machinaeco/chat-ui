@@ -10,6 +10,7 @@
 	import type { ConvSidebar } from "$lib/types/ConvSidebar";
 	import type { Model } from "$lib/types/Model";
 	import { page } from "$app/stores";
+	import CarbonSustainability from "~icons/carbon/sustainability";
 
 	export let conversations: ConvSidebar[] = [];
 	export let canLogin: boolean;
@@ -147,6 +148,15 @@
 	>
 		Settings
 	</a>
+	{#if $page.data.isBillingEnabled}
+		<a
+			href="{base}/pass"
+			class="flex h-9 flex-none items-center gap-1.5 rounded-lg pl-2.5 pr-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+		>
+			Pass
+			<span class="ml-auto px-1 text-lime-500"><CarbonSustainability /></span>
+		</a>
+	{/if}
 	{#each JSON.parse(envPublic.PUBLIC_NAV_LINKS || "[]") as navLink}
 		<a
 			href={navLink.href}

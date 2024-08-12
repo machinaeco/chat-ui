@@ -8,6 +8,7 @@
 	import CarbonCheckmark from "~icons/carbon/checkmark";
 	import CarbonCaretDown from "~icons/carbon/caret-down";
 	import CarbonInformation from "~icons/carbon/information";
+	import CarbonSustainability from "~icons/carbon/sustainability";
 
 	import EosIconsLoading from "~icons/eos-icons/loading";
 
@@ -439,6 +440,22 @@
 							</span>
 							<CarbonInformation class="-mt-0.5 inline-block" />
 						</button>
+					{/if}
+					{#if $page.data.userHasActivePass}
+						<span class="max-sm:hidden">·</span><br class="sm:hidden" />
+						<a href="{base}/pass" class="inline-flex items-center hover:underline"
+							>Machina Eco Pass active <CarbonSustainability
+								class="ms-1 text-xxs text-lime-500"
+							/></a
+						>
+					{/if}
+					{#if $page.data.userHasPaymentFailed}
+						<span class="max-sm:hidden">·</span><br class="sm:hidden" />
+						<a
+							href="{base}/pass"
+							class="inline-flex items-center font-bold text-red-700 hover:underline"
+							>Payment for your Machina Eco Pass failed</a
+						>
 					{/if}
 					<span class="max-sm:hidden">·</span><br class="sm:hidden" /> Generated content may be inaccurate
 					or false.
