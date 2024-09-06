@@ -23,6 +23,7 @@ import { usageLimits } from "$lib/server/usageLimits";
 import { MetricsServer } from "$lib/server/metrics";
 import { textGeneration } from "$lib/server/textGeneration";
 import type { TextGenerationContext } from "$lib/server/textGeneration/types";
+import { hasActivePass } from "$lib/utils/billing.js";
 
 export async function POST({ request, locals, params, getClientAddress }) {
 	const id = z.string().parse(params.id);
@@ -116,7 +117,9 @@ export async function POST({ request, locals, params, getClientAddress }) {
 		}
 	}
 
-	if (usageLimits?.freeMessagesPerDay) {
+	const userHasActivePass = locals.user ? await hasActivePass(locals.user) : false;
+
+	if (usageLimits?.freeMessagesPerDay && !userHasActivePass) {
 		const now = new Date();
 		const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 		const nEvents = Math.max(
