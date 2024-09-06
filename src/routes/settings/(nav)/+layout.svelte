@@ -71,7 +71,7 @@
 			<h3 bind:this={assistantsSection} class="pb-3 pl-3 pt-5 text-[.8rem] text-gray-800 sm:pl-1">
 				Assistants
 			</h3>
-			{#if !data.loginEnabled || (data.loginEnabled && !!data.user)}
+			{#if !data.loginEnabled || (data.loginEnabled && data.user?.isCreator)}
 				<a
 					href="{base}/settings/assistants/new"
 					class="group flex h-10 flex-none items-center gap-2 pl-3 pr-2 text-sm text-gray-500 hover:bg-gray-100 md:rounded-xl
