@@ -13,7 +13,7 @@ import { MetricsServer } from "$lib/server/metrics";
 import { usageLimits } from "$lib/server/usageLimits";
 import { billingEnv, hasActivePass, hasPaymentFailed } from "$lib/utils/billing";
 
-export const load: LayoutServerLoad = async ({ locals, depends, getClientAddress }) => {
+export const load: LayoutServerLoad = async ({ locals, depends, request, getClientAddress }) => {
 	depends(UrlDependency.ConversationList);
 
 	const settings = await collections.settings.findOne(authCondition(locals));
@@ -190,7 +190,10 @@ export const load: LayoutServerLoad = async ({ locals, depends, getClientAddress
 			parameters: model.parameters,
 			preprompt: model.preprompt,
 			multimodal: model.multimodal,
-			tools: model.tools,
+			tools:
+				model.tools &&
+				// disable tools on huggingchat android app
+				!request.headers.get("user-agent")?.includes("co.huggingface.chat_ui_android"),
 			unlisted: model.unlisted,
 		})),
 		oldModels,
@@ -223,6 +226,7 @@ export const load: LayoutServerLoad = async ({ locals, depends, getClientAddress
 			email: locals.user.email,
 			logoutDisabled: locals.user.logoutDisabled,
 			isAdmin: locals.user.isAdmin ?? false,
+			isEarlyAccess: locals.user.isEarlyAccess ?? false,
 		},
 		assistant,
 		enableAssistants,
