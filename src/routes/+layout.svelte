@@ -24,7 +24,6 @@
 	import Logo from "$lib/components/icons/Logo.svelte";
 	import { isHuggingChat } from "$lib/utils/isHuggingChat";
 	import CarbonClose from "~icons/carbon/close";
-	import { PUBLIC_APP_DISCLAIMER } from "$env/static/public";
 
 	export let data;
 
@@ -189,7 +188,7 @@
 	{/if}
 </svelte:head>
 
-{#if !$settings.ethicsModalAccepted && $page.url.pathname !== `${base}/privacy` && PUBLIC_APP_DISCLAIMER === "1"}
+{#if !$settings.ethicsModalAccepted && $page.url.pathname !== `${base}/privacy` && envPublic.PUBLIC_APP_DISCLAIMER === "1"}
 	<DisclaimerModal />
 {/if}
 
