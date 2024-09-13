@@ -270,7 +270,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 			}
 			replaced = true;
 
-			return chunk.html.replace("%gaId%", envPublic.PUBLIC_GOOGLE_ANALYTICS_ID);
+			return chunk.html
+				.replace("%gaId%", envPublic.PUBLIC_GOOGLE_ANALYTICS_ID)
+				.replace("%gcId%", envPublic.PUBLIC_GOOGLE_CONVERSION_ID);
 		},
 	});
 

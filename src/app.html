@@ -17,6 +17,7 @@
 
 			// For some reason, Sveltekit doesn't let us load env variables from .env here, so we load it from hooks.server.ts
 			window.gaId = "%gaId%";
+			window.gcId = "%gcId%";
 		</script>
 		%sveltekit.head%
 	</head>
@@ -41,6 +42,15 @@
 				gtag("consent", "default", { ad_storage: "denied", analytics_storage: "denied" });
 				/// ^ See https://developers.google.com/tag-platform/gtagjs/reference#consent
 				/// TODO: ask the user for their consent and update this with gtag('consent', 'update')
+
+				if (window.gcId && new URL(window.location).searchParams.get("billing") === "success") {
+					gtag("event", "conversion", {
+						send_to: window.gcId,
+						value: 1.0,
+						currency: "EUR",
+					});
+					window.history.pushState({}, "", "/");
+				}
 			}
 		</script>
 	</body>
