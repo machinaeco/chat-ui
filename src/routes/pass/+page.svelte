@@ -51,7 +51,9 @@
 				</p>
 			</div>
 		</div>
-		<div class="mt-4 max-w-[65ch] overflow-hidden rounded-xl border text-base dark:border-gray-800">
+		<div
+			class="mt-4 max-w-[65ch] overflow-hidden rounded-xl border border-lime-500 bg-lime-50 text-base dark:border-lime-700 dark:bg-lime-900"
+		>
 			<div
 				class="flex justify-between p-4"
 				class:flex-col={$page.data.userHasActivePass || $page.data.userHasPaymentFailed}
@@ -143,6 +145,24 @@
 						</div>
 					{/if}
 				</form>
+			</div>
+		</div>
+		<div
+			class="mt-4 max-w-[65ch] overflow-hidden rounded-xl border border-sky-500 bg-sky-50 text-base dark:border-sky-700 dark:bg-sky-900"
+		>
+			<div class="flex flex-col justify-between p-4">
+				<div class="flex flex-col gap-3">
+					<h3 class="font-bold">Impact Pass: 50% off for good impact</h3>
+					<div class="text-gray-600 dark:text-gray-300">
+						We support companies, initiatives, associations and artists who are making a difference
+						with their work. If your products or services create social value, contribute to the
+						Sustainable Development Goals, or are in the arts and culture, <a
+							href="https://machina.eco/blog/impact-pass/"
+							class="text-sky-700 underline dark:text-sky-300"
+							target="_blank">apply for our Impact Pass</a
+						>! You will receive a 50% discount on our rates. Attention: Contingent limited.
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
